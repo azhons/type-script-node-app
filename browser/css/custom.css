@@ -1,0 +1,23 @@
+html{
+    overflow-y: scroll;
+}
+html, body {
+    height: 100%;
+}
+
+
+.clear {
+    clear:both;
+}
+
+.ng-hide {
+    display:none !important;
+}
+
+.wait {
+    cursor: wait;
+    opacity: 0.5;
+}
+.wait > * {
+    pointer-events: none;
+}

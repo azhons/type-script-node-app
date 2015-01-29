@@ -1,0 +1,3 @@
+﻿Coding guidelines:
+
+https://github.com/johnpapa/angularjs-styleguide

@@ -26,3 +26,7 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+/api/bin
+/api/obj/Debug
+*.suo
+*.dat
