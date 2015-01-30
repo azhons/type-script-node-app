@@ -30,3 +30,7 @@ node_modules
 /api/obj/Debug
 *.suo
 *.dat
+*.tmp
+/browser/bin
+/browser/obj/Debug
+*.user

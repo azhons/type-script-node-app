@@ -1,0 +1,21 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "angularjs/angular.d.ts": {
+      "commit": "01ce3ccf7f071514ff5057ef32a4550bf0b81dfe"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "01ce3ccf7f071514ff5057ef32a4550bf0b81dfe"
+    },
+    "socket.io-client/socket.io-client.d.ts": {
+      "commit": "01ce3ccf7f071514ff5057ef32a4550bf0b81dfe"
+    },
+    "angularjs/angular-route.d.ts": {
+      "commit": "01ce3ccf7f071514ff5057ef32a4550bf0b81dfe"
+    }
+  }
+}

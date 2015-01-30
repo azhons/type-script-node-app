@@ -23,6 +23,7 @@
     <Content Include="front\auth\placeholder.txt" />
     <Content Include="package.json" />
     <Content Include="tsd.json" />
+    <TypeScriptCompile Include="global-schemas.ts" />
     <TypeScriptCompile Include="dev.ts" />
     <Content Include="cache\placeholder.txt" />
     <Content Include="domain\placeholder.txt" />

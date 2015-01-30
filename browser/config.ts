@@ -1,4 +1,4 @@
-﻿window.app = {
+﻿var app = {
     name: "demoApp",
     contrl: {
         app: "AppController",
@@ -8,3 +8,5 @@
         chat: "chatService",
     }
 };
+
+export = app;
