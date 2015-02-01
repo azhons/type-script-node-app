@@ -6,3 +6,4 @@
 /// <reference path="bluebird/bluebird.d.ts" />
 /// <reference path="cookie-parser/cookie-parser.d.ts" />
 /// <reference path="body-parser/body-parser.d.ts" />
+/// <reference path="mocha/mocha.d.ts" />

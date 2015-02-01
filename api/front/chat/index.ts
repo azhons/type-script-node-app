@@ -1,45 +1,46 @@
 ﻿/// <reference path="../../typings/tsd.d.ts" />
-
 import express = require('express');
-import sockets = require('socket.io');
-import http = require('http');
 import schemas = require('../../global-schemas');
-
-var redisAdapter = require('socket.io-redis');
+import chatService = require('../../domain/chat-service');
+import routes = require('./routes');
 
 function write(socket, message: schemas.ChatMessage)
 {
     socket.emit('news', message);
 }
 
-function onNewSocket(socket: any)
+function onNewSocket(socket: Socket)
 {
     console.log('connected');
-    var i = 1;
 
-    var interval = setInterval(() => {
-        var message = "message " + socket.id + ":" + (i++);
-        console.log(message);
-
-        write(socket, { text: message, time: (new Date()).getTime() });
-    }, 1000);
+    console.log(socket.client.request.decoded_token);
 
     socket.on('disconnect', function () {
-        clearInterval(interval);
         console.log('Disconnected');
     });
 }
 
-function init(server: http.Server) {
-    var io = sockets.listen(server);
+export function init(
+    socketServer: SocketServer,
+    serviceFactory: (context: chatService.ChatContext) => chatService.ChatService) {
 
-    io.adapter(redisAdapter());
-
-    io.on('connection', onNewSocket);
+    socketServer.on('connection', onNewSocket);
 
     var app = express();
+    app.use('/', routes);
 
     return app;
 }
 
-export = init;
+interface Socket {
+    emit(name: string, ...args: any[]): Socket;
+    on(event: string, listener: Function): any;
+    disconnect(close: boolean): Socket;
+    handshake: any;
+    client: any;
+}
+
+interface SocketServer {
+    on(event: 'connection', listener: (socket: Socket) => void): any;
+    on(event: string, listener: Function): any;
+}

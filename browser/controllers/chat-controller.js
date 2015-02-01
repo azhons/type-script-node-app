@@ -5,11 +5,21 @@ define(["require", "exports", '../config'], function (require, exports, app) {
     function ChatController(chatService, $timeout) {
         var vm = this;
         vm.messages = [];
-        chatService.listen(function (message) {
-            $timeout(addMessage.bind(null, message));
-        });
+        vm.login = login;
+        vm.user = "";
+        vm.token = "";
         function addMessage(message) {
             vm.messages.unshift({ text: message.text, time: new Date(message.time) });
+        }
+        function onMessage(message) {
+            $timeout(addMessage.bind(null, message));
+        }
+        function login() {
+            chatService.login(vm.user).then(function (t) {
+                vm.token = t.data.token;
+            }).then(function () {
+                chatService.listen(vm.token, onMessage);
+            });
         }
     }
 });

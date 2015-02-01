@@ -13,12 +13,25 @@ function ChatController(chatService: IChatService, $timeout) {
     var vm = this;
 
     vm.messages = [];
-        
-    chatService.listen(message => {
-        $timeout(addMessage.bind(null, message));
-    });
-
+    vm.login = login;
+    vm.user = "";
+    vm.token = "";
+      
     function addMessage(message: schemas.ChatMessage) {
         vm.messages.unshift({ text: message.text, time: new Date(message.time)});
+    }
+
+    function onMessage(message: schemas.ChatMessage)
+    {
+        $timeout(addMessage.bind(null, message));
+    }
+
+    function login()
+    {
+        chatService.login(vm.user)
+            .then(t=> { vm.token = t.data.token; })
+            .then(() => {
+                chatService.listen(vm.token, onMessage);
+            });
     }
 }

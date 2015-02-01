@@ -4,12 +4,18 @@ var http = require('http');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var chat = require('./front/chat/index');
+var factory = require('./factory');
+var domainFactory = require('./domain/factory');
 var cors = require('cors');
 var rootApp = express();
-//rootApp.use(cors());
+rootApp.use(cors());
 rootApp.use(bodyParser.json());
 rootApp.use(cookieParser());
-var server = http.createServer(rootApp);
-rootApp.use('/chat', chat(server));
-server.listen(8085);
+var httpServer = http.createServer(rootApp);
+rootApp.use('/chat', createChatController());
+httpServer.listen(8085);
+function createChatController() {
+    var redisClient = factory.createRedisClient();
+    return chat.init(factory.createSocketServer(httpServer), function (c) { return domainFactory.createChatService(redisClient, c); });
+}
 //# sourceMappingURL=dev.js.map

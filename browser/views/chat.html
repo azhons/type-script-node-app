@@ -1,4 +1,9 @@
-﻿<div>
+﻿user: <select ng-model="vm.user" ng-change="vm.login()">
+    <option value="">---</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+</select>
+<div>
     <div ng-repeat="message in vm.messages">
         <span>{{message.text}} - {{message.time}}</span>
     </div>

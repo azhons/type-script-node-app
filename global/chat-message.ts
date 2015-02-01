@@ -1,7 +1,9 @@
 interface ChatMessage
 {
     text: string;
-    time: number;
+    author: number;
+    time?: number;
+    counter?: number;
 }
 
 export = ChatMessage;

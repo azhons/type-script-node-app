@@ -1,0 +1,3 @@
+﻿
+http://www.devthought.com/2011/12/22/a-string-is-not-an-error/
+https://www.joyent.com/developers/node/design/errors
