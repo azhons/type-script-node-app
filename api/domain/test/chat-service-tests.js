@@ -74,7 +74,7 @@ describe("Sending chat messages", function () {
         }
         var socket = stubSocket();
         var socketService = new sockets.Service(factory, socket);
-        done();
+        // done();
     });
 });
 //# sourceMappingURL=chat-service-tests.js.map

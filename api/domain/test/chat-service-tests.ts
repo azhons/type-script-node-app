@@ -93,6 +93,6 @@ describe("Sending chat messages",() => {
         var socket = stubSocket();
         var socketService = new sockets.Service(factory, socket);
 
-        done();
+        // done();
     });
 });
