@@ -24,7 +24,8 @@
     <Content Include="front\inbox\placeholder.txt" />
     <Content Include="package.json" />
     <Content Include="tsd.json" />
-    <TypeScriptCompile Include="domain\chat-service.ts" />
+    <TypeScriptCompile Include="domain\chat-socket-service.ts" />
+    <TypeScriptCompile Include="domain\chat-persistence-service.ts" />
     <TypeScriptCompile Include="domain\factory.ts" />
     <TypeScriptCompile Include="domain\test\chat-service-tests.ts">
       <SubType>Code</SubType>

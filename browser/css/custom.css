@@ -21,3 +21,7 @@ html, body {
 .wait > * {
     pointer-events: none;
 }
+
+div.chat-group {
+margin: 10px 20px 0 20px;
+}

@@ -8,32 +8,45 @@ define(["require", "exports", '../config', 'socket.io-client'], function (requir
     var ChatService = (function () {
         function ChatService($http) {
             this.$http = $http;
+            this.connected = false;
         }
         ChatService.prototype.listen = function (token, handler) {
-            var socket = io.connect('http://localhost:8085', {
+            var _this = this;
+            if (this.socket) {
+                return;
+            }
+            this.socket = io.connect('http://localhost:8085', {
                 query: 'token=' + token
             });
-            socket.on('error', function (e) {
-                console.log("error");
-                console.log(arguments);
+            this.socket.on('error', function () {
+                _this.connected = false;
             });
-            socket.on('news', function (data) {
+            this.socket.on('news', function (data) {
                 handler(data);
+                data && data.length && (_this.chatContext.lastReadCounter = data[0].counter);
             });
-            socket.on('connect', function () {
-                console.log('connect');
-                console.log(arguments);
+            this.socket.on('connect', function () {
+                _this.connected = true;
+                _this.connectToChat();
             });
-            socket.on('disconnect', function () {
-                console.log('disconnect');
-                console.log(arguments);
-            });
-            socket.on('reconnect', function () {
-                console.log('reconnected');
+            this.socket.on('disconnect', function () {
+                _this.connected = false;
             });
         };
+        ChatService.prototype.chooseChat = function (context) {
+            this.chatContext = context;
+            this.connectToChat();
+        };
         ChatService.prototype.login = function (user) {
+            this.user = user;
             return this.$http.post("http://localhost:8085/chat/auth", { id: user });
+        };
+        ChatService.prototype.sendMessage = function (messageText) {
+            var m = { text: messageText };
+            this.socket.emit('add-message', m);
+        };
+        ChatService.prototype.connectToChat = function () {
+            this.chatContext && this.connected && this.socket.emit('choose-chat', this.chatContext);
         };
         return ChatService;
     })();

@@ -7,18 +7,13 @@ var socketioJwt = require('socketio-jwt');
 
 var factory =
 {
-    createRedisClient: (host?: string, port?: number): redis.RedisClient => {
-        var client;
-        if (host && port) {
-            client = redis.createClient(port, host);
-        }
-        else
-        {
-            client = redis.createClient();
-        }
-
+    createRedisClient: (): redis.RedisClient => {
+        var client = redis.createClient();
         Promise.promisifyAll(client);
         return client;
+    },
+    createSubscriber: (): redis.RedisClient => {
+        return redis.createClient();
     },
     createSocketServer: (httpServer: http.Server): SocketIO.Server => {
         var io = sockets.listen(httpServer);

@@ -1,18 +1,9 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../typings/all.ts" />
 var express = require('express');
+var socket = require('../../domain/chat-socket-service');
 var routes = require('./routes');
-function write(socket, message) {
-    socket.emit('news', message);
-}
-function onNewSocket(socket) {
-    console.log('connected');
-    console.log(socket.client.request.decoded_token);
-    socket.on('disconnect', function () {
-        console.log('Disconnected');
-    });
-}
 function init(socketServer, serviceFactory) {
-    socketServer.on('connection', onNewSocket);
+    socketServer.on('connection', socket.onNewSocket.bind(null, serviceFactory));
     var app = express();
     app.use('/', routes);
     return app;

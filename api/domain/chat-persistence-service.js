@@ -1,15 +1,15 @@
 var keys = { messages: "M", counter: "C", notification: "__keyspace@0__:" };
-var ChatService = (function () {
-    function ChatService(store, subscriberFactory, context) {
+var Service = (function () {
+    function Service(store, subscriberFactory, context) {
         this.store = store;
         this.subscriberFactory = subscriberFactory;
         this.context = context;
     }
-    ChatService.prototype.listenForNews = function (handler) {
+    Service.prototype.listenForNews = function (handler) {
         this.newsHandler = handler;
         !this.subscriber && this.connectSubscriber();
     };
-    ChatService.prototype.addMessage = function (message) {
+    Service.prototype.addMessage = function (message) {
         var _this = this;
         var time = (new Date()).getTime();
         return this.store.incrAsync(this.getCounterKey()).then(function (counter) {
@@ -22,7 +22,7 @@ var ChatService = (function () {
             return _this.store.zaddAsync(_this.getMessagesKey(), counter, JSON.stringify(savedMessage)).then(function () { return counter; });
         });
     };
-    ChatService.prototype.readMessagesAfter = function (counter) {
+    Service.prototype.readMessagesAfter = function (counter) {
         var messagesKey = this.context.getKey() + keys.messages;
         var min = "" + counter;
         var max = "+inf";
@@ -44,13 +44,13 @@ var ChatService = (function () {
             return results;
         });
     };
-    ChatService.prototype.getMessagesKey = function () {
+    Service.prototype.getMessagesKey = function () {
         return this.context.getKey() + keys.messages;
     };
-    ChatService.prototype.getCounterKey = function () {
+    Service.prototype.getCounterKey = function () {
         return this.context.getKey() + keys.counter;
     };
-    ChatService.prototype.connectSubscriber = function () {
+    Service.prototype.connectSubscriber = function () {
         var _this = this;
         this.subscriber = this.subscriberFactory();
         this.subscriber.on("message", function () {
@@ -65,17 +65,17 @@ var ChatService = (function () {
             _this.connectSubscriber();
         });
     };
-    return ChatService;
+    return Service;
 })();
-exports.ChatService = ChatService;
-var ChatContext = (function () {
-    function ChatContext(users) {
+exports.Service = Service;
+var Context = (function () {
+    function Context(users) {
         this.key = users.sort(function (a, b) { return a - b; }).join(":");
     }
-    ChatContext.prototype.getKey = function () {
+    Context.prototype.getKey = function () {
         return this.key;
     };
-    return ChatContext;
+    return Context;
 })();
-exports.ChatContext = ChatContext;
-//# sourceMappingURL=chat-service.js.map
+exports.Context = Context;
+//# sourceMappingURL=chat-persistence-service.js.map

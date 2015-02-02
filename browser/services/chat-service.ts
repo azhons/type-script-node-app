@@ -14,50 +14,74 @@ function getChatService($http: ng.IHttpService) {
 
 class ChatService implements IChatService
 {
+    private user: string;
+    private connected: boolean = false;
+    private socket: SocketIOClient.Socket;
+    private chatContext: schemas.ClientChatContext;
+
     constructor(private $http: ng.IHttpService)
     {
     }
 
-    listen(token: string, handler: (message: schemas.ChatMessage) => void) {
+    listen(token: string, handler: (messages: schemas.ChatMessage[]) => void) {
+        if (this.socket)
+        {
+            return;
+        }
 
-        var socket = io.connect('http://localhost:8085', {
+        this.socket = io.connect('http://localhost:8085', {
             query: 'token=' + token
         });
 
-        socket.on('error', function (e) {
-            console.log("error");
-            console.log(arguments);
+        this.socket.on('error', () => {
+            this.connected = false;
         });
 
-        socket.on('news', function (data) {
+        this.socket.on('news', (data: schemas.ChatMessage[])  => {            
             handler(data);
+            data && data.length && (this.chatContext.lastReadCounter = data[0].counter);
         });
 
-        socket.on('connect', function () {
-            console.log('connect');
-            console.log(arguments);
+        this.socket.on('connect', () => {            
+            this.connected = true;
+            this.connectToChat();            
         });
 
-        socket.on('disconnect', function () {
-            console.log('disconnect');
-            console.log(arguments);
+        this.socket.on('disconnect', () => {
+            this.connected = false;
         });
+    }
 
-        socket.on('reconnect', function () {
-            console.log('reconnected');
-        });
+    chooseChat(context: schemas.ClientChatContext)
+    {
+        this.chatContext = context;
+        this.connectToChat();
     }
 
     login(user: string): ng.IHttpPromise<{ token: string }>
     {
+        this.user = user;
         return this.$http.post<{ token: string }>("http://localhost:8085/chat/auth", {id: user});
+    }
+
+    sendMessage(messageText: string)
+    {
+        var m: schemas.ChatMessage = { text: messageText };
+        this.socket.emit('add-message', m);
+    }
+
+    private connectToChat()
+    {
+        this.chatContext && this.connected && this.socket.emit('choose-chat', this.chatContext);
     }
 }
 
 interface IChatService
 {
-    listen(token: string,handler: (message: schemas.ChatMessage) => void): void;
-    login(user: string): ng.IHttpPromise<{token: string}>;
+    listen(token: string, handler: (messages: schemas.ChatMessage[]) => void): void;
+    login(user: string): ng.IHttpPromise<{ token: string }>;
+    sendMessage(messageText: string);
+    chooseChat(context: schemas.ClientChatContext);
 }
 
 export = IChatService;

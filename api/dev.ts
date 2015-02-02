@@ -20,6 +20,9 @@ httpServer.listen(8085);
 
 function createChatController()
 {
-    var redisClient = factory.createRedisClient();
-    return chat.init(factory.createSocketServer(httpServer), c => domainFactory.createChatService(redisClient, c));
+    var store = factory.createRedisClient();
+
+    return chat.init(
+        factory.createSocketServer(httpServer),
+        c => domainFactory.createChatService(store, factory.createSubscriber, c));
 }

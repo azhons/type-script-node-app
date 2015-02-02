@@ -1,8 +1,9 @@
-/// <reference path="../../typings/tsd.d.ts" />
+/// <reference path="../../typings/all.ts" />
 var assert = require('assert');
-var chatService = require('../chat-service');
+var persistence = require('../chat-persistence-service');
 var factory = require('../../factory');
 var Promise = require('bluebird');
+var Lazy = require('lazy.js');
 describe("Test Suite 1", function () {
     function saveMessage(service) {
         var time = new Date();
@@ -15,20 +16,18 @@ describe("Test Suite 1", function () {
     }
     it("Test A", function (done) {
         var redisClient = factory.createRedisClient();
-        var context = new chatService.ChatContext([22, 11, 1000]);
-        var service = new chatService.ChatService(redisClient, context);
+        var context = new persistence.Context([22, 11, 1000]);
+        var service = new persistence.Service(redisClient, factory.createSubscriber, context);
         var cleanupKeys = ["11:22:1000M", "11:22:1000C"];
         Promise.all(cleanupKeys.map(function (k) { return redisClient.delAsync(k); })).then(function () {
-            return Promise.all([
-                saveMessage(service),
-                saveMessage(service),
-                saveMessage(service)
-            ]);
+            var saveOperation = saveMessage.bind(null, service);
+            return Promise.all(Lazy.generate(saveOperation, 4).toArray());
         }).then(function () {
             return service.readMessagesAfter(2);
         }).then(function (messages) {
-            assert.equal(messages.length, 1, "expected 1 message after index 2");
-            assert.equal(messages[0].counter, 3);
+            assert.equal(messages.length, 2, "expected 2 messages after index 2, exclusive, got: " + messages.length);
+            assert.equal(messages[0].counter, 4);
+            assert.equal(messages[1].counter, 3);
             done();
         }).catch(function (e) { return done(e); });
     });

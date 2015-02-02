@@ -5,6 +5,7 @@ declare module "redis" {
         zrangebyscoreAsync(key: string, min: string, max: string): Promise<string[]>;
         zrevrangebyscoreAsync(key: string, max: string, min: string): Promise<string[]>;
         delAsync(key: string): Promise<number>;
+        lpushAsync(key: string, value: string): Promise<number>;
     }
 }
 

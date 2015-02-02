@@ -16,14 +16,16 @@ function ChatController(chatService: IChatService, $timeout) {
     vm.login = login;
     vm.user = "";
     vm.token = "";
+    vm.chatMessage = "";
+    vm.sendMessage = sendMessage;
       
-    function addMessage(message: schemas.ChatMessage) {
-        vm.messages.unshift({ text: message.text, time: new Date(message.time)});
+    function addMessages(messages: schemas.ChatMessage[]) {
+        messages && messages.length && vm.messages.unshift.apply(vm.messages, messages);
     }
 
-    function onMessage(message: schemas.ChatMessage)
+    function onMessages(messages: schemas.ChatMessage[])
     {
-        $timeout(addMessage.bind(null, message));
+        $timeout(addMessages.bind(null, messages));
     }
 
     function login()
@@ -31,7 +33,15 @@ function ChatController(chatService: IChatService, $timeout) {
         chatService.login(vm.user)
             .then(t=> { vm.token = t.data.token; })
             .then(() => {
-                chatService.listen(vm.token, onMessage);
+                chatService.listen(vm.token, onMessages);
+                chatService.chooseChat({ lastReadCounter: 0, otherUserId: (vm.user === "1" ? 2 : 1) });
             });
+    }
+
+    function sendMessage()
+    {
+        chatService.sendMessage(vm.chatMessage);
+        // TODO: persist until delivered:
+        vm.chatMessage = "";
     }
 }

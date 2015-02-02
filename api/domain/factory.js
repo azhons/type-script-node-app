@@ -1,8 +1,8 @@
 /// <reference path="../typings/all.ts" />
-var chatService = require('./chat-service');
+var chatPersistence = require('./chat-persistence-service');
 var factory = {
-    createChatService: function (client, context) {
-        return new chatService.ChatService(client, context);
+    createChatService: function (client, subscriberFactory, context) {
+        return new chatPersistence.Service(client, subscriberFactory, context);
     }
 };
 module.exports = factory;

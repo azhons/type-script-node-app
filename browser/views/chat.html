@@ -1,10 +1,22 @@
-﻿user: <select ng-model="vm.user" ng-change="vm.login()">
-    <option value="">---</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-</select>
-<div>
-    <div ng-repeat="message in vm.messages">
-        <span>{{message.text}} - {{message.time}}</span>
-    </div>
+﻿<div class="chat-group">
+    I'm user:
+    <select ng-model="vm.user" ng-change="vm.login()">
+        <option value="">---</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+    </select>
+</div>
+
+<div class="chat-group">
+    <textarea class="form-control" rows="3" ng-model="vm.chatMessage"></textarea>
+    <button ng-click="vm.sendMessage()" ng-disabled="!vm.chatMessage || !vm.user" class="btn btn-default" style="margin-top: 3px;">Send</button>
+</div>
+
+<div class="chat-group">
+    <ul class="list-group">
+        <li class="list-group-item" ng-repeat="message in vm.messages">
+            <span class="badge" format-time="{{message.time}}"></span>
+            {{message.author}}: {{message.text}}
+        </li>
+    </ul>
 </div>

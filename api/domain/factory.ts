@@ -1,10 +1,13 @@
 ﻿/// <reference path="../typings/all.ts" />
-import chatService = require('./chat-service');
+import chatPersistence = require('./chat-persistence-service');
 import redis = require('redis');
 
 var factory = {
-    createChatService: (client: redis.RedisClient, context: chatService.ChatContext) => {
-        return new chatService.ChatService(client, context);
+    createChatService: (
+        client: redis.RedisClient,
+        subscriberFactory: () => redis.RedisClient, context: chatPersistence.Context) =>
+    {
+        return new chatPersistence.Service(client, subscriberFactory, context);
     }
 };
 

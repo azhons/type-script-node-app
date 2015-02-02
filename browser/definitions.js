@@ -6,7 +6,8 @@
     require([
         "services/chat-service",
         "controllers/app-controller",
-        "controllers/chat-controller"
+        "controllers/chat-controller",
+        "directives/formatTimeDirective"
     ], function () {
         main.init();
     });

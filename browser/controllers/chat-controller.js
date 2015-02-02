@@ -8,18 +8,26 @@ define(["require", "exports", '../config'], function (require, exports, app) {
         vm.login = login;
         vm.user = "";
         vm.token = "";
-        function addMessage(message) {
-            vm.messages.unshift({ text: message.text, time: new Date(message.time) });
+        vm.chatMessage = "";
+        vm.sendMessage = sendMessage;
+        function addMessages(messages) {
+            messages && messages.length && vm.messages.unshift.apply(vm.messages, messages);
         }
-        function onMessage(message) {
-            $timeout(addMessage.bind(null, message));
+        function onMessages(messages) {
+            $timeout(addMessages.bind(null, messages));
         }
         function login() {
             chatService.login(vm.user).then(function (t) {
                 vm.token = t.data.token;
             }).then(function () {
-                chatService.listen(vm.token, onMessage);
+                chatService.listen(vm.token, onMessages);
+                chatService.chooseChat({ lastReadCounter: 0, otherUserId: (vm.user === "1" ? 2 : 1) });
             });
+        }
+        function sendMessage() {
+            chatService.sendMessage(vm.chatMessage);
+            // TODO: persist until delivered:
+            vm.chatMessage = "";
         }
     }
 });
