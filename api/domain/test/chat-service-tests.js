@@ -1,6 +1,7 @@
 /// <reference path="../../typings/all.ts" />
 var assert = require('assert');
 var persistence = require('../chat-persistence-service');
+var sockets = require('../chat-socket-service');
 var factory = require('../../factory');
 var Promise = require('bluebird');
 var Lazy = require('lazy.js');
@@ -21,6 +22,26 @@ describe("Sending chat messages", function () {
             time: time.getTime()
         });
     }
+    function stubSocket() {
+        var socket = {
+            client: {
+                request: {
+                    decoded_token: {
+                        id: 1
+                    }
+                }
+            },
+            on: function (e, listener) {
+            },
+            emit: function (channel) {
+                var args = [];
+                for (var _i = 1; _i < arguments.length; _i++) {
+                    args[_i - 1] = arguments[_i];
+                }
+            }
+        };
+        return socket;
+    }
     it("persists and returns messages after specific index", function (done) {
         var redisClient = factory.createRedisClient();
         var context = new persistence.Context([22, 11, 1000]);
@@ -37,6 +58,23 @@ describe("Sending chat messages", function () {
             assert.equal(messages[1].counter, 3);
             done();
         }).catch(function (e) { return done(e); });
+    });
+    it("can test socket service", function (done) {
+        function factory(context) {
+            return {
+                listenForNews: function (handler) {
+                },
+                addMessage: function (message) {
+                    return Promise.resolve(1);
+                },
+                readMessagesAfter: function (counter) {
+                    return Promise.resolve([]);
+                }
+            };
+        }
+        var socket = stubSocket();
+        var socketService = new sockets.Service(factory, socket);
+        done();
     });
 });
 //# sourceMappingURL=chat-service-tests.js.map

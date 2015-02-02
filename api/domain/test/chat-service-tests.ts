@@ -2,10 +2,12 @@
 import assert = require('assert');
 import redis = require('redis');
 import persistence = require('../chat-persistence-service');
+import sockets = require('../chat-socket-service');
 import factory = require('../../factory');
 import Promise = require('bluebird');
 import Lazy = require('lazy.js');
 import env = require('../../env');
+import schemas = require('../../global-schemas');
 
 describe("Sending chat messages",() => {
 
@@ -30,7 +32,28 @@ describe("Sending chat messages",() => {
         });
     }
 
-    it("persists and returns messages after specific index", (done) => {
+    function stubSocket(): sockets.Socket
+    {
+        var socket: sockets.Socket = {
+            client: {
+                request: {
+                    decoded_token: {
+                        id: 1
+                    }
+                }
+            },
+            on: (e: string, listener: Function) =>
+            {
+            },
+            emit: (channel: string, ...args: any[]) =>
+            {
+            }
+        };
+
+        return socket;
+    }
+
+    it("persists and returns messages after specific index", done => {
         var redisClient = factory.createRedisClient();
         var context = new persistence.Context([22, 11, 1000]);
         var service = new persistence.Service(redisClient, factory.createSubscriber, context);
@@ -49,5 +72,27 @@ describe("Sending chat messages",() => {
 
             done();
         }).catch(e=> done(e));
+    });
+
+    it("can test socket service", done => {
+        function factory(context: persistence.Context) : persistence.IService
+        {
+            return {
+                listenForNews: (handler: Function) => {
+
+                },
+                addMessage(message: schemas.ChatMessage): Promise<number> {
+                    return Promise.resolve(1);
+                },
+                readMessagesAfter(counter: number): Promise<schemas.ChatMessage[]> {
+                    return Promise.resolve([]);
+                }
+            };
+        }
+
+        var socket = stubSocket();
+        var socketService = new sockets.Service(factory, socket);
+
+        done();
     });
 });

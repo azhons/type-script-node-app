@@ -5,7 +5,7 @@ import P = require('bluebird');
 
 export class Service
 {
-    private persistService: persistence.Service;
+    private persistService: persistence.IService;
     private persistContext: persistence.Context;
 
     private reading = false;
@@ -15,7 +15,7 @@ export class Service
     private latestRead: number;
 
     constructor(
-        private serviceFactory: (context: persistence.Context) => persistence.Service,
+        private serviceFactory: (context: persistence.Context) => persistence.IService,
         private socket: Socket)
     {
         this.listenOnSocket();
@@ -73,16 +73,14 @@ export class Service
 }
 
 export function onNewSocket(
-    serviceFactory: (context: persistence.Context) => persistence.Service,
+    serviceFactory: (context: persistence.Context) => persistence.IService,
     socket: Socket) {
     new Service(serviceFactory, socket);
 }
 
 export interface Socket {
-    emit(name: string, ...args: any[]): Socket;
+    emit(name: string, ...args: any[]): any;
     on(event: string, listener: Function): any;
-    disconnect(close: boolean): Socket;
-    handshake: any;
     client: any;
 }
 

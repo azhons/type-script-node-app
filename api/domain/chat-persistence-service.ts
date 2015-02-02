@@ -4,7 +4,7 @@ import Promise = require('bluebird');
 
 var keys = { messages: "M", counter: "C", notification: "__keyspace@0__:" };
 
-export class Service
+export class Service implements IService
 {
     private newsHandler: Function;
     private subscriber: Subscriber;
@@ -89,6 +89,12 @@ export class Service
             this.connectSubscriber();
         });
     }
+}
+
+export interface IService {
+    listenForNews(handler: Function);
+    addMessage(message: schemas.ChatMessage): Promise<number>;
+    readMessagesAfter(counter: number): Promise<schemas.ChatMessage[]>;
 }
 
 export interface Store {
