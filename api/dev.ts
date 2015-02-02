@@ -6,7 +6,10 @@ import bodyParser = require('body-parser');
 import chat = require('./front/chat/index');
 import factory = require('./factory');
 import domainFactory = require('./domain/factory');
+import env = require('./env');
 var cors = require('cors');
+
+global.settings = env.getEnv(process.env.NODE_ENV);
 
 var rootApp = express();
 
@@ -16,6 +19,7 @@ rootApp.use(cookieParser());
 
 var httpServer = http.createServer(rootApp);
 rootApp.use('/chat', createChatController());
+
 httpServer.listen(8085);
 
 function createChatController()

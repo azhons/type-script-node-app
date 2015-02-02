@@ -31,7 +31,7 @@ function ChatController(chatService: IChatService, $timeout) {
     function login()
     {
         chatService.login(vm.user)
-            .then(t=> { vm.token = t.data.token; })
+            .then(t => { vm.token = t.data.token; vm.messages = []; })
             .then(() => {
                 chatService.listen(vm.token, onMessages);
                 chatService.chooseChat({ lastReadCounter: 0, otherUserId: (vm.user === "1" ? 2 : 1) });

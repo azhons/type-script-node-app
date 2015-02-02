@@ -31,6 +31,7 @@
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="env.ts" />
     <TypeScriptCompile Include="factory.ts" />
     <TypeScriptCompile Include="front\chat\routes.ts" />
     <TypeScriptCompile Include="global-schemas.ts" />

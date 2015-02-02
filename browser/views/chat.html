@@ -1,6 +1,6 @@
 ﻿<div class="chat-group">
     I'm user:
-    <select ng-model="vm.user" ng-change="vm.login()">
+    <select ng-model="vm.user" ng-change="vm.login()" ng-disabled="vm.user">
         <option value="">---</option>
         <option value="1">1</option>
         <option value="2">2</option>

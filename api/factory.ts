@@ -3,12 +3,23 @@ import Promise = require('bluebird');
 import redis = require('redis');
 import sockets = require('socket.io');
 import http = require('http');
+import settings = require('./env');
 var socketioJwt = require('socketio-jwt');
 
 var factory =
 {
     createRedisClient: (): redis.RedisClient => {
-        var client = redis.createClient();
+
+        var settings: settings.Settings = global.settings;
+        var client;
+
+        if (settings.redisHost && settings.redisPort) {
+            client = redis.createClient(settings.redisPort, settings.redisHost);
+        } else
+        {
+            client = redis.createClient();
+        }
+
         Promise.promisifyAll(client);
         return client;
     },

@@ -116,6 +116,13 @@ export class Context
     getKey() { return this.key; }
 }
 
+export function createChatService(
+    client: Store,
+    subscriberFactory: () => Subscriber, context: Context)
+{
+    return new Service(client, subscriberFactory, context);
+}
+
 interface SavedMessage {
     // id
     i: number;

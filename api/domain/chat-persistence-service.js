@@ -78,4 +78,8 @@ var Context = (function () {
     return Context;
 })();
 exports.Context = Context;
+function createChatService(client, subscriberFactory, context) {
+    return new Service(client, subscriberFactory, context);
+}
+exports.createChatService = createChatService;
 //# sourceMappingURL=chat-persistence-service.js.map

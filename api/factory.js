@@ -5,7 +5,14 @@ var sockets = require('socket.io');
 var socketioJwt = require('socketio-jwt');
 var factory = {
     createRedisClient: function () {
-        var client = redis.createClient();
+        var settings = global.settings;
+        var client;
+        if (settings.redisHost && settings.redisPort) {
+            client = redis.createClient(settings.redisPort, settings.redisHost);
+        }
+        else {
+            client = redis.createClient();
+        }
         Promise.promisifyAll(client);
         return client;
     },

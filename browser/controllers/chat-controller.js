@@ -19,6 +19,7 @@ define(["require", "exports", '../config'], function (require, exports, app) {
         function login() {
             chatService.login(vm.user).then(function (t) {
                 vm.token = t.data.token;
+                vm.messages = [];
             }).then(function () {
                 chatService.listen(vm.token, onMessages);
                 chatService.chooseChat({ lastReadCounter: 0, otherUserId: (vm.user === "1" ? 2 : 1) });
