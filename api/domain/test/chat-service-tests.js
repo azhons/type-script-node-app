@@ -4,7 +4,14 @@ var persistence = require('../chat-persistence-service');
 var factory = require('../../factory');
 var Promise = require('bluebird');
 var Lazy = require('lazy.js');
-describe("Test Suite 1", function () {
+describe("Sending chat messages", function () {
+    before(function () {
+        var settings = {
+            redisHost: null,
+            redisPort: null
+        };
+        global.settings = settings;
+    });
     function saveMessage(service) {
         var time = new Date();
         time.setDate(time.getDate() + 1);
@@ -14,7 +21,7 @@ describe("Test Suite 1", function () {
             time: time.getTime()
         });
     }
-    it("Test A", function (done) {
+    it("persists and returns messages after specific index", function (done) {
         var redisClient = factory.createRedisClient();
         var context = new persistence.Context([22, 11, 1000]);
         var service = new persistence.Service(redisClient, factory.createSubscriber, context);
