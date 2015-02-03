@@ -8,6 +8,7 @@ import factory = require('./factory');
 import domainFactory = require('./domain/factory');
 import env = require('./env');
 var cors = require('cors');
+var path = require('path');
 
 global.settings = env.getEnv(process.env.NODE_ENV);
 
@@ -19,6 +20,8 @@ rootApp.use(cookieParser());
 
 var httpServer = http.createServer(rootApp);
 rootApp.use('/chat', createChatController());
+
+//rootApp.use('/', express.static(path.join(__dirname, '/../browser')));
 
 httpServer.listen(8085);
 
