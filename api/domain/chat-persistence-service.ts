@@ -59,7 +59,7 @@ export class Service implements IService
         }).then(results => {
             if (results.length && results[results.length - 1].counter === counter)
             {
-                // we got everything we need from cache, otherwise we need to go to permanent store
+                // we got everything we need from cache, otherwise we would need to go to permanent store
                 results.splice(results.length - 1, 1);
             }
 
