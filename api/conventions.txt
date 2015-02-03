@@ -1,4 +1,4 @@
-﻿
+﻿http://www.typescriptlang.org/Handbook
 http://www.devthought.com/2011/12/22/a-string-is-not-an-error/
 https://www.joyent.com/developers/node/design/errors
 https://blog.jcoglan.com/2013/03/30/callbacks-are-imperative-promises-are-functional-nodes-biggest-missed-opportunity/
